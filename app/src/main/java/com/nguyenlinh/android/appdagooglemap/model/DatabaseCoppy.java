@@ -18,11 +18,11 @@ import java.io.OutputStream;
  */
 
 public class DatabaseCoppy {
-    public static String DATABASE_NAME = "NhaHangDB.sqlite";
+    private static String DATABASE_NAME = "NhaHangDB.sqlite";
     private static final String DB_PATH_SUFFIX = "/databases/";
     public static SQLiteDatabase database=null;
 
-    Context context;
+    private Context context;
     public DatabaseCoppy(Context context){
         this.context = context;
     }
@@ -75,4 +75,5 @@ public class DatabaseCoppy {
         return context.getApplicationInfo().dataDir + DB_PATH_SUFFIX+
                 DATABASE_NAME;
     }
+
 }

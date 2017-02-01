@@ -20,7 +20,11 @@ import java.util.ArrayList;
  */
 
 public class SQLDatasource {
-    DatabaseCoppy db;
+    private DatabaseCoppy db;
+
+    public SQLDatasource(){
+
+    }
 
     public SQLDatasource(Context context){
         db = new DatabaseCoppy(context);
@@ -44,6 +48,24 @@ public class SQLDatasource {
         }
 
         //cursor.close();
+        return list;
+    }
+
+    public ArrayList<NhaHang> locNhaHangTheoMa(int ma){
+        ArrayList<NhaHang> list = new ArrayList<>();
+        db.database = SQLiteDatabase.openOrCreateDatabase("/data/data/com.nguyenlinh.android.appdagooglemap.app/databases/NhaHangDB.sqlite",null,null);
+        Cursor cursor = db.database.rawQuery("SELECT * FROM NhaHang where ma = " + ma,null);
+        while (cursor.moveToNext()){
+            NhaHang nhaHang = new NhaHang();
+            nhaHang.setMa(cursor.getInt(0));
+            nhaHang.setTen(cursor.getString(1));
+            byte[] byteHhinh = cursor.getBlob(2);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(byteHhinh,0,byteHhinh.length);
+            nhaHang.setHinh(bitmap);
+            nhaHang.setVido(cursor.getDouble(3));
+            nhaHang.setKinhdo(cursor.getDouble(4));
+            list.add(nhaHang);
+        }
         return list;
     }
 

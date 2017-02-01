@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
                 //Bundle bundle = new Bundle();
                 //NhaHang nhaHang = dsNhaHang.get(position);
                 int ma = dsNhaHang.get(position).getMa();
-                Double vido = dsNhaHang.get(position).getVido();
-                Double kinhdo = dsNhaHang.get(position).getKinhdo();
-                String ten = dsNhaHang.get(position).getTen();
+                //Double vido = dsNhaHang.get(position).getVido();
+                //Double kinhdo = dsNhaHang.get(position).getKinhdo();
+                //String ten = dsNhaHang.get(position).getTen();
                 //Bitmap anh = dsNhaHang.get(position).getHinh();
 
                 //ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 //byte[] bp = baos.toByteArray();
                 //String enCodeImage = Base64.encodeToString(bp,Base64.DEFAULT);
                 Intent intent = new Intent(MainActivity.this,MapsActivity.class);
-                intent.putExtra("VIDO",vido);
-                intent.putExtra("KINHDO",kinhdo);
-                intent.putExtra("TEN",ten);
+                //intent.putExtra("VIDO",vido);
+                //intent.putExtra("KINHDO",kinhdo);
+                //intent.putExtra("TEN",ten);
                 //intent.putExtra("IMG",enCodeImage);
                 intent.putExtra("MA",ma);
                 //bundle.putSerializable("NHAHANG",nhaHang);

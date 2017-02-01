@@ -13,10 +13,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nguyenlinh.android.appdagooglemap.adapter.CustomAdapter;
 import com.nguyenlinh.android.appdagooglemap.model.NhaHang;
+import com.nguyenlinh.android.appdagooglemap.model.SQLDatasource;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private SQLDatasource db = new SQLDatasource();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +44,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Intent intent = getIntent();
-        Double vido = intent.getDoubleExtra("VIDO",0.0);
-        Double kinhdo = intent.getDoubleExtra("KINHDO",0.0);
+        //Double vido = intent.getDoubleExtra("VIDO",0.0);
+        //Double kinhdo = intent.getDoubleExtra("KINHDO",0.0);
         //Bundle bundle = intent.getBundleExtra("BUNDLE");
         //NhaHang nhaHang = (NhaHang) bundle.getSerializable("NHAHANG");
         //NhaHang nhaHang = (NhaHang) intent.getSerializableExtra("NHAHANG");
@@ -52,17 +54,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Bundle ex = getIntent().getExtras();
         //Bitmap hinh = ex.getParcelable("IMG");
         int ma = intent.getIntExtra("MA",0);
-        String ten = intent.getStringExtra("TEN");
+        //String ten = intent.getStringExtra("TEN");
         //String encodeArrImage = intent.getStringExtra("IMG");
         //byte[] encodeByte = Base64.decode(encodeArrImage,Base64.DEFAULT);
         //Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte,0,encodeByte.length);
-        NhaHang nhaHang = new NhaHang(ma,ten,null,vido,kinhdo);
+        NhaHang nhaHang = db.locNhaHangTheoMa(ma).get(0);
         //Toast.makeText(this,encodeArrImage,Toast.LENGTH_LONG).show();
 
         // Add a marker in Sydney and move the camera
         //LatLng lc = new LatLng(nhaHang.getVido(), nhaHang.getKinhdo());
         LatLng lc = new LatLng(nhaHang.getVido(), nhaHang.getKinhdo());
-        Marker marker = mMap.addMarker(new MarkerOptions().position(lc).title(ten));
+        Marker marker = mMap.addMarker(new MarkerOptions().position(lc).title(nhaHang.getTen()));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lc,16));
         mMap.setInfoWindowAdapter(new CustomAdapter(MapsActivity.this,nhaHang));
         marker.showInfoWindow();
