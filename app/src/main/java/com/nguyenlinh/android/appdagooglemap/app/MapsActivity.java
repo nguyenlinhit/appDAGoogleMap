@@ -1,9 +1,13 @@
 package com.nguyenlinh.android.appdagooglemap.app;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,6 +24,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private SQLDatasource db = new SQLDatasource();
 
+    GoogleMap.OnMyLocationChangeListener listener = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            if (mMap != null) {
+                mMap.clear();
+                Marker marker = mMap.addMarker(new MarkerOptions().position(loc));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +44,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    private void addEvents() {
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.setOnMyLocationChangeListener(listener);
+            }
+        });
+    }
+
+    private void addControls() {
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
     }
 
 
@@ -43,26 +82,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Intent intent = getIntent();
-        //Double vido = intent.getDoubleExtra("VIDO",0.0);
-        //Double kinhdo = intent.getDoubleExtra("KINHDO",0.0);
-        //Bundle bundle = intent.getBundleExtra("BUNDLE");
-        //NhaHang nhaHang = (NhaHang) bundle.getSerializable("NHAHANG");
-        //NhaHang nhaHang = (NhaHang) intent.getSerializableExtra("NHAHANG");
-        //NhaHang nhaHang = new NhaHang();
+        //addControls();
+        //addEvents();
 
-        //Bundle ex = getIntent().getExtras();
-        //Bitmap hinh = ex.getParcelable("IMG");
+        layNhaHang();
+
+
+    }
+
+    private void layNhaHang() {
+        Intent intent = getIntent();
+
         int ma = intent.getIntExtra("MA",0);
-        //String ten = intent.getStringExtra("TEN");
-        //String encodeArrImage = intent.getStringExtra("IMG");
-        //byte[] encodeByte = Base64.decode(encodeArrImage,Base64.DEFAULT);
-        //Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte,0,encodeByte.length);
         NhaHang nhaHang = db.locNhaHangTheoMa(ma).get(0);
-        //Toast.makeText(this,encodeArrImage,Toast.LENGTH_LONG).show();
 
         // Add a marker in Sydney and move the camera
-        //LatLng lc = new LatLng(nhaHang.getVido(), nhaHang.getKinhdo());
         LatLng lc = new LatLng(nhaHang.getVido(), nhaHang.getKinhdo());
         Marker marker = mMap.addMarker(new MarkerOptions().position(lc).title(nhaHang.getTen()));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lc,16));
